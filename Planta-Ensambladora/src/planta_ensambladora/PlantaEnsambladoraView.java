@@ -5,10 +5,6 @@ import java.awt.*;
 
 public class PlantaEnsambladoraView extends JFrame {
 	
-	/**
-	 * @author Lucía Sánchez Manjarrez
-	 */
-	
 	private final static String [] COLORES = {"Amarillo", "Aqua", "Azul", "Blanco", "Cafe", "Gris", "Morado", "Naranja", "Negro", "Rojo", "Rosa", "Tinto", "Verde", "NaranjaClaro", "VerdeClaro"};
 	private LineaView [] lineas;
 	static Graphics g;
@@ -33,18 +29,7 @@ public class PlantaEnsambladoraView extends JFrame {
 				coordenateX = 50;
 				coordenateY+=300;
 			}
-		}
-
-//PRUEBAS		
-//		for (int i = 0; i < lineas.length; i++) {
-//			for (int j = 0; j < 7; j++) {
-//				changeStation(i);
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {e.printStackTrace();}
-//			}
-//		}
-//TERMINAN PRUEBAS		
+		}	
 	}
 	
 	public LineaView getLineaView(int noLinea) {

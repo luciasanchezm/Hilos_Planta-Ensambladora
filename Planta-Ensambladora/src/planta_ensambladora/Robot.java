@@ -2,7 +2,6 @@ package planta_ensambladora;
 
 public class Robot {
 	private boolean isReady;
-	private Semaforo semaphore;
 	private Linea lastLine;
 	private final int robotType;
 	public static final int TYPE_CHASIS = 1;
@@ -15,7 +14,6 @@ public class Robot {
 	
 	public Robot(int robotType) {
 		this.isReady = true;
-		semaphore = new Semaforo(1);
 		this.robotType = robotType;
 	}
 
@@ -25,10 +23,6 @@ public class Robot {
 
 	public void setReady(boolean isReady) {
 		this.isReady = isReady;
-	}
-
-	public Semaforo getSemaphore() {
-		return semaphore;
 	}
 	
 	public Linea getLastLine() {

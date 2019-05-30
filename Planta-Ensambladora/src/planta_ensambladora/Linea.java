@@ -10,13 +10,12 @@ public class Linea extends Thread{
 	private int lineNumber;
 	private LineaView view;
 	private Vector<Estacion> stations;
-	private static Vector<Vector<Robot>> robots;
 	private static Semaforo totalCarsSemaphore;
 	private static int totalCars = 0;
+	private static int [] operationPerStation = {10000, 3000, 2000, 5000, 2500, 2500, 5000};
 	
-	public Linea(int lineNumber, Vector<Vector<Robot>> robots, LineaView view) {
+	public Linea(int lineNumber, LineaView view) {
 		this.lineNumber = lineNumber;
-		this.robots = robots;
 		this.view = view;
 		if(totalCarsSemaphore == null)
 			totalCarsSemaphore = new Semaforo(1);
@@ -25,13 +24,13 @@ public class Linea extends Thread{
 
 	private void initializeStations() {
 		stations = new Vector<Estacion>();
-		stations.add(new Estacion("Chasis y cableado",1,10000,true));
-		stations.add(new Estacion("Motor",2,10000,true));
-		stations.add(new Estacion("Transmision",3,10000,true));
-		stations.add(new Estacion("Carroceria",4,10000,true));
-		stations.add(new Estacion("Interiores",5,10000,true));
-		stations.add(new Estacion("Llantas",6,10000,true));
-		stations.add(new Estacion("Puertas",7,10000,true));
+		stations.add(new Estacion(1, operationPerStation[0],true));
+		stations.add(new Estacion(2, operationPerStation[1],true));
+		stations.add(new Estacion(3, operationPerStation[2],true));
+		stations.add(new Estacion(4, operationPerStation[3],true));
+		stations.add(new Estacion(5, operationPerStation[4],true));
+		stations.add(new Estacion(6, operationPerStation[5],true));
+		stations.add(new Estacion(7, operationPerStation[6],true));
 	}
 	
 	@Override
@@ -51,34 +50,16 @@ public class Linea extends Thread{
 			totalCarsSemaphore.Libera();
 			
 			for(int i = 0; i < stations.size(); i++) {
-				currentStationsRobots = robots.get(i);
 				station = stations.get(i);
-				
-				if(i == 5 || i == 6) {
-					robot = currentStationsRobots.get(station.getStationNumber()-1);
-					view.changeStation();
-					continue;
-				}
-				
-				for(int j = 0; j < currentStationsRobots.size(); j++) {
-					robot = currentStationsRobots.get(j);
-					robot.getSemaphore().Espera();
-					if(!robot.isReady()) {
-						robot.getSemaphore().Libera();
-						robot = null;
-						continue;
-					}
-					robot.setReady(false);
-					robot.getSemaphore().Libera();
-					if(station.getStationNumber()==3)
-						lastRobot.setReady(true);
-					break;
-				}
+				robot = station.chooseRobot();
 				
 				if(robot == null) {
 					i--;
 					continue;
 				}
+				
+				if(station.getStationNumber()==3)
+					lastRobot.setReady(true);
 				
 				robot.setLastLine(this);
 				view.changeStation();
@@ -87,5 +68,9 @@ public class Linea extends Thread{
 				lastRobot = robot;
 			}
 		}
+	}
+	
+	public static int getOperationTime(int stationNumber) {
+		return operationPerStation[stationNumber - 1];
 	}
 }

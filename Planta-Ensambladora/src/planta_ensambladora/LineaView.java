@@ -11,7 +11,6 @@ public class LineaView extends JPanel {
 	
 	private int lineNumber, stationNumber;
 	private Image [] stations;
-	private int [] operationPerStation = {0, 10000, 10000, 10000, 10000, 10000, 10000, 10000};
 	private Image[] bases;
 	private Image finishStation;
 	private Image robot;
@@ -83,7 +82,7 @@ public class LineaView extends JPanel {
 	public void drawRobot(int noRobot) {
 		if (stationNumber==0)
 			return;
-		int time = 0, operationPerStation = this.operationPerStation[stationNumber];
+		int time = 0, operationPerStation = Linea.getOperationTime(stationNumber);
 		boolean band = true;
 		while(time < operationPerStation) {
 			draw();
@@ -103,6 +102,7 @@ public class LineaView extends JPanel {
 			} catch (InterruptedException e) {e.printStackTrace();}
 			time+=100;
 		}
+		repaint();
 	}
 	
 	public void finishCar() {

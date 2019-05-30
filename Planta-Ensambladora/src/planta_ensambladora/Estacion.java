@@ -1,41 +1,48 @@
 package planta_ensambladora;
 
+import java.util.Vector;
+
 public class Estacion{
 
-	private String stationName;
+	private Vector<Robot> robots;
 	private int stationNumber;
 	private int operationTime;
+	private int noRobots;
 	private boolean produce;
+	private static Semaforo semaphore;
 	
-	public Estacion(String name, int stationNumber, int operationTime, boolean produce) {
-		this.stationName = name;
+	public Estacion(int stationNumber, int operationTime, boolean produce) {
 		this.stationNumber = stationNumber;
 		this.operationTime = operationTime;
 		this.produce = produce;
+		this.noRobots = PlantaEnsambladoraModel.getRobotsAt(stationNumber);
+		this.semaphore = new Semaforo(1);
+		this.robots = PlantaEnsambladoraModel.getStationRobots(stationNumber);
 	}
-
-	public String getStationName() {
-		return stationName;
-	}
-
-	public void setStationName(String name) {
-		this.stationName = name;
+	
+	public Robot chooseRobot() {
+		Robot robot = null;
+		for(int i = 0; i < noRobots; i++) {
+			robot = robots.get(i);
+			semaphore.Espera();
+			if(!robot.isReady()) {
+				semaphore.Libera();
+				robot = null;
+				continue;
+			}
+			robot.setReady(false);
+			semaphore.Libera();
+			break;
+		}
+		return robot;
 	}
 	
 	public int getStationNumber() {
 		return stationNumber;
 	}
 
-	public void setStationNumber(int stationNumber) {
-		this.stationNumber = stationNumber;
-	}
-
 	public int getOperationTime() {
 		return operationTime;
-	}
-
-	public void setOperationTime(int operationTime) {
-		this.operationTime = operationTime;
 	}
 
 	public boolean isProduce() {
@@ -44,5 +51,9 @@ public class Estacion{
 
 	public void setProduce(boolean produce) {
 		this.produce = produce;
+	}
+
+	public Semaforo getSemaphore() {
+		return semaphore;
 	}
 }
